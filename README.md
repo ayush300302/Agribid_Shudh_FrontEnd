@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Agribid Shudh
+
+Frontend application for Agribid Shudh, built with Next.js. The backend is maintained separately.
+
+## Related Repository
+
+[agribid-shudh-backend](https://github.com/vivek-9941/agribid-shudh-backend)
+
+Refer to the backend repository for API documentation and backend setup.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js
+- npm
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run `npm run` to see the scripts available in `package.json`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## High-Level Design
 
-## Learn More
+```mermaid
+flowchart LR
+    User([User]) --> Browser["Web Browser"]
 
-To learn more about Next.js, take a look at the following resources:
+    subgraph Frontend["Agribid Shudh Frontend"]
+        Browser --> App["Next.js Application"]
+        App --> Routes["Routes and Pages"]
+        Routes --> Features["Feature Modules"]
+        Features --> UI["Shared UI Components"]
+        Features --> Client["API Client"]
+        Config["Environment Configuration"] --> Client
+    end
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    Client -->|"HTTPS API requests"| API["Backend APIs"]
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    subgraph Backend["Agribid Shudh Backend"]
+        API --> Logic["Backend Services and Business Logic"]
+        Logic --> Data["Backend Data Storage"]
+    end
 
-## Deploy on Vercel
+    API -->|"Responses"| Client
+    Client --> Features
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The diagram shows the proposed frontend-to-backend interaction at a high level. Backend internals and API contracts should be verified against the backend documentation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Frontend Modules
+
+The following modules are included in the development specifications. Their presence here describes planned product scope, not necessarily completed functionality.
+
+| ID | Module |
+|---|---|
+| M00 | Architecture and Common Standards |
+| M01 | Authentication and Session |
+| M02 | Users, Roles, and Permissions (RBAC) |
+| M03 | Partner Hierarchy and KYC Onboarding |
+| M04 | Product Catalog |
+| M05 | Pricing and Schemes |
+| M06 | Cart and Ordering (Buy Side) |
+| M07 | Order Fulfilment (Sell Side) |
+| M08 | Invoicing and GST Compliance |
+| M09 | Dispatch and Delivery |
+| M10 | Inventory |
+| M11 | Payments, Credit, and Ledger |
+| M12 | Returns and Claims |
+| M13 | Notifications |
+| M14 | Dashboards and Reports |
+| M15 | Admin Console |
+| M16 | Audit, Configuration, and Support |
+| M17 | Integrations Hub |
+
+## Proposed Sprint Plan
+
+This is an initial grouping based on module names. Confirm dependencies, sprint capacity, and acceptance criteria against the detailed specifications before scheduling.
+
+| Sprint | Focus | Modules |
+|---|---|---|
+| 0 | Architecture and project foundations | M00 |
+| 1 | Authentication and access control | M01, M02 |
+| 2 | Partner onboarding | M03 |
+| 3 | Catalog, pricing, and schemes | M04, M05 |
+| 4 | Buyer ordering | M06 |
+| 5 | Fulfilment, dispatch, and inventory | M07, M09, M10 |
+| 6 | Invoicing and financial workflows | M08, M11 |
+| 7 | Returns and notifications | M12, M13 |
+| 8 | Reporting, administration, and integrations | M14, M15, M16, M17 |
+
+## Configuration and Security
+
+- Configure API URLs and other environment-specific settings outside the source code.
+- Do not commit credentials, tokens, or secrets.
+- Follow the backend documentation for authentication, API contracts, and required environment variables.
+- Frontend validation improves usability; the backend must enforce authorization and business rules.
