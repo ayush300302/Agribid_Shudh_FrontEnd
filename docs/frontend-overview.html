@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agribid Shudh Frontend Overview</title>
+  <style>
+    @page { size: A4; margin: 14mm; }
+    :root { color-scheme: light; --green: #1b5e20; --ink: #19392a; --muted: #64766a; --pale: #eef4ee; --orange: #ed8b32; --line: #dce5dd; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); font: 10.5pt/1.55 "Segoe UI", Arial, sans-serif; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: 30pt; line-height: 1.12; }
+    h2 { margin: 0 0 12px; font-size: 19pt; }
+    h3 { margin: 16px 0 5px; font-size: 12pt; }
+    p { margin-bottom: 9px; }
+    code { padding: 1px 4px; border-radius: 3px; background: #f1f5f1; font: 9pt Consolas, monospace; }
+    .cover { min-height: 255mm; display: flex; flex-direction: column; justify-content: space-between; padding: 15mm 10mm; color: white; background: var(--green); border-radius: 8px; }
+    .cover .rule { width: 52px; height: 5px; margin-bottom: 22px; background: var(--orange); border-radius: 3px; }
+    .cover .subtitle { max-width: 125mm; color: #e6f0e6; font-size: 14pt; }
+    .cover .status { margin-top: 20px; padding: 13px 15px; border-left: 3px solid var(--orange); background: rgba(255,255,255,.1); }
+    .cover .small { color: #d7e5d8; font-size: 9pt; }
+    .page { page-break-before: always; padding-top: 3mm; }
+    .eyebrow { margin-bottom: 5px; color: var(--green); font-size: 8pt; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; }
+    .lead { color: var(--muted); font-size: 12pt; }
+    .callout { margin: 12px 0; padding: 11px 13px; border-left: 3px solid var(--orange); background: #fff7eb; }
+    .flow { display: flex; align-items: stretch; gap: 7px; margin: 12px 0 16px; }
+    .flow div { flex: 1; min-width: 0; padding: 10px 8px; border: 1px solid var(--line); border-radius: 5px; background: var(--pale); text-align: center; font-size: 9pt; font-weight: 600; }
+    .flow span { align-self: center; color: var(--green); font-weight: 700; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .box { padding: 12px; border: 1px solid var(--line); border-radius: 5px; }
+    table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 9pt; }
+    th, td { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--green); background: var(--pale); }
+    ul, ol { margin: 6px 0 12px; padding-left: 20px; }
+    li { margin: 3px 0; }
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li { position: relative; min-height: 30px; margin: 7px 0; padding-left: 35px; }
+    .steps li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--green); color: white; text-align: center; line-height: 24px; font-size: 9pt; font-weight: 700; }
+    .footer { margin-top: 14px; padding-top: 7px; border-top: 1px solid var(--line); color: var(--muted); font-size: 8pt; }
+    .tag { display: inline-block; margin: 2px 3px 2px 0; padding: 3px 7px; border-radius: 10px; background: var(--pale); color: var(--green); font-size: 8pt; font-weight: 600; }
+    .warning { color: #76551f; }
+    @media print { .cover { break-after: page; } .page { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div>
+      <div class="rule"></div>
+      <p class="small">AGRIBID SHUDH · FRONTEND LEARNING GUIDE</p>
+      <h1>How the Admin<br>Frontend Fits Together</h1>
+      <p class="subtitle">A beginner-friendly map of the React and Next.js code built for the M00 foundation and M01 authentication screens.</p>
+      <div class="status"><strong>Current state:</strong> the visual frontend and shared foundations are built. Authentication is not connected to a live backend yet.</div>
+    </div>
+    <div>
+      <p><span class="tag">Next.js App Router</span><span class="tag">React + TypeScript</span><span class="tag">Tailwind CSS</span><span class="tag">shadcn/ui</span><span class="tag">TanStack Query</span><span class="tag">Motion installed</span></p>
+      <p class="small">Read this alongside the source files. It explains the purpose of each layer, not every Tailwind utility class.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">01 · Big picture</p>
+    <h2>Routes and component flow</h2>
+    <p class="lead">In the App Router, folders under <code>app/</code> become URL paths. A page exports the UI for its route; layouts and providers wrap pages.</p>
+    <div class="flow"><div><code>app/layout.tsx</code><br>root layout</div><span>→</span><div>Locale + Query<br>providers</div><span>→</span><div>Route page<br>and components</div></div>
+    <table>
+      <thead><tr><th>URL</th><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>/</code></td><td><code>app/page.tsx</code></td><td>Dashboard route, rendered inside AdminShell.</td></tr>
+        <tr><td><code>/admin/login</code></td><td><code>app/admin/login/page.tsx</code></td><td>Email/password screen and optional expired-session notice.</td></tr>
+        <tr><td><code>/admin/2fa</code></td><td><code>app/admin/2fa/page.tsx</code></td><td>Standalone TOTP entry screen.</td></tr>
+      </tbody>
+    </table>
+    <h3>What the root layout does</h3>
+    <ul>
+      <li><code>app/layout.tsx</code> sets metadata, loads Geist fonts, imports global CSS, and wraps all routes in LocaleProvider and QueryProvider.</li>
+      <li><code>children</code> is the page selected by the current URL. The root layout does not perform login.</li>
+      <li>The layout is a Server Component. Client providers can be rendered inside it to enable browser-side state below that boundary.</li>
+    </ul>
+    <div class="callout"><strong>Server vs Client:</strong> a page is a Server Component by default. Add <code>"use client"</code> when that component needs state, event handlers, effects, or browser APIs. Login and TOTP forms use it because they track typed input.</div>
+    <h3>Reusable layout pieces</h3>
+    <ul>
+      <li><code>components/layout/AdminShell.tsx</code> gives the dashboard its header, navigation, and content area.</li>
+      <li><code>components/auth/AdminAuthLayout.tsx</code> shares the branded responsive panel between login and TOTP.</li>
+      <li>Both layouts receive children through a prop. This avoids duplicating shared markup.</li>
+    </ul>
+    <div class="footer">Agribid Shudh frontend overview · M00 foundation and M01 static UI</div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">02 · State and language</p>
+    <h2>How the screens respond</h2>
+    <h3>Controlled login fields</h3>
+    <ol class="steps">
+      <li><code>useState("")</code> creates a value and setter for email and password.</li>
+      <li><code>value={email}</code> displays the current React state in the input.</li>
+      <li><code>onChange</code> calls <code>setEmail(event.target.value)</code> as the user types. This makes the input controlled by React.</li>
+      <li><code>handleSubmit</code> calls <code>event.preventDefault()</code> to stop browser navigation. It intentionally does not authenticate yet.</li>
+    </ol>
+    <h3>TOTP form</h3>
+    <p>The code field uses the same controlled-input pattern. <code>inputMode="numeric"</code> suggests a number keypad and <code>autoComplete="one-time-code"</code> helps browsers recognize an OTP field. No code length is enforced because the specification does not set it.</p>
+    <h3>Session-expired notice</h3>
+    <p><code>components/auth/SessionExpiryNotice.tsx</code> reads the URL query string. The login page wraps it in <code>&lt;Suspense&gt;</code>, as required for Next.js prerendering with <code>useSearchParams</code>. Visit <code>/admin/login?reason=idle_timeout</code> to see the message.</p>
+    <h3>Locale provider</h3>
+    <ul>
+      <li><code>lib/messages.ts</code> contains English (<code>en</code>), Hindi (<code>hi</code>), and Marathi (<code>mr</code>) text.</li>
+      <li><code>LocaleProvider</code> stores the selected language in React state and exposes <code>t(key)</code> through context.</li>
+      <li><code>useLocale()</code> is a custom hook that lets child components read the language and translations.</li>
+      <li>The choice currently resets on a full reload. Backend <code>preferredLanguage</code> can become the source of truth after <code>/me</code> is integrated.</li>
+    </ul>
+    <div class="callout"><strong>Beginner model:</strong> Props pass values down one component branch. Context shares a value across many descendants. State stores a value that can change while the page is open.</div>
+    <div class="footer">The visible UI is static with respect to authentication; no fake success response is shown.</div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">03 · API foundation</p>
+    <h2>How real API integration will fit</h2>
+    <div class="flow"><div>LoginForm<br>UI</div><span>→</span><div>useMutation<br>event/action</div><span>→</span><div>authApi<br>service</div><span>→</span><div>POST<br>backend</div></div>
+    <p>This is the intended separation: the UI collects input, a TanStack Query mutation manages an action, a service owns the HTTP call, and the backend verifies credentials. That flow is <strong>not wired yet</strong>.</p>
+    <h3>TanStack Query provider</h3>
+    <p><code>components/providers/QueryProvider.tsx</code> creates one <code>QueryClient</code> for the app and makes it available to descendant components. No query or mutation is currently registered.</p>
+    <h3>Shared request helper</h3>
+    <p><code>lib/api-client.ts</code> exposes <code>apiRequest&lt;TResponse&gt;(path, options)</code>. It reads <code>NEXT_PUBLIC_API_BASE_URL</code>, JSON-encodes a supplied body, sets <code>Accept-Language</code>, optionally adds a Bearer token, disables caching by default, and turns the documented error envelope into an <code>ApiError</code>.</p>
+    <div class="callout"><strong>Safety:</strong> the helper does not store tokens. No API base URL is configured, no request is made, and no real credentials are sent by the current forms.</div>
+    <h3>What the M01 contract still needs to tell us</h3>
+    <ul>
+      <li>Exact login and 2FA request/response JSON, including how the temporary 2FA challenge is represented.</li>
+      <li>Where browser sessions and refresh tokens live, and how refresh/revocation works.</li>
+      <li>How <code>/me</code> supplies role/permission data from M02 and how idle timeout revokes the server session.</li>
+    </ul>
+    <div class="footer">Queries usually read server state. Mutations submit actions such as login. Login must be a mutation once the real contract is available.</div>
+  </section>
+
+  <section class="page">
+    <p class="eyebrow">04 · Reading and testing</p>
+    <h2>A good source-reading order</h2>
+    <ol class="steps">
+      <li><code>app/layout.tsx</code> — root wrapper and providers.</li>
+      <li><code>components/providers/LocaleProvider.tsx</code> — context, state, and custom hook.</li>
+      <li><code>app/admin/login/page.tsx</code> — controlled form, client boundary, and submit handler.</li>
+      <li><code>components/auth/AdminAuthLayout.tsx</code> — reusable layout and props.</li>
+      <li><code>app/admin/2fa/page.tsx</code> and <code>components/auth/SessionExpiryNotice.tsx</code> — second factor UI and query-based notice.</li>
+      <li><code>components/dashboard/DashboardContent.tsx</code> — dashboard image, honest empty state, and documented distribution chain.</li>
+      <li><code>lib/api-client.ts</code> and <code>components/providers/QueryProvider.tsx</code> — API foundation, not an auth implementation.</li>
+    </ol>
+    <h3>Run the checks</h3>
+    <p>In PowerShell, use <code>npm.cmd</code> if the script policy blocks <code>npm.ps1</code>:</p>
+    <p><code>npm.cmd run lint</code><br><code>npm.cmd run build</code><br><code>npm.cmd run dev</code></p>
+    <p>Then check <code>http://localhost:3000/</code>, <code>/admin/login</code>, <code>/admin/2fa</code>, and <code>/admin/login?reason=idle_timeout</code>.</p>
+    <h3>Current status</h3>
+    <div class="grid">
+      <div class="box"><strong>Built:</strong><br>Admin shell, dashboard visual, localized static login/TOTP screens, idle-timeout message, Query provider, generic API helper.</div>
+      <div class="box warning"><strong>Waiting for backend:</strong><br>Real login/2FA, token lifecycle, protected routes, role-based navigation, live metrics, and actual session timeout/revocation.</div>
+    </div>
+    <p class="footer">The farmer image is a local Pexels photo at <code>public/farmer-field.jpg</code>. Motion is installed but intentionally unused until a transition improves a real interaction.</p>
+  </section>
+</body>
+</html>
