@@ -1,6 +1,6 @@
-# Agribid Shudh
+# Agribid Shudh — Frontend
 
-Frontend application for Agribid Shudh, built with Next.js. The backend is maintained separately.
+The frontend application for Agribid Shudh. The backend is maintained separately.
 
 ## Related Repository
 
@@ -21,47 +21,62 @@ Refer to the backend repository for API documentation and backend setup.
 npm install
 ```
 
-### Start the development server
+### Run locally
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-Run `npm run` to see the scripts available in `package.json`.
+Open the local URL shown in the terminal. Run `npm run` to see the scripts available in `package.json`.
 
 ## High-Level Design
 
+The diagram illustrates a proposed frontend architecture. Backend internals and API contracts should be confirmed against the backend documentation.
+
 ```mermaid
-flowchart LR
-    User([User]) --> Browser["Web Browser"]
+flowchart TB
+    subgraph Users
+        Buyer["Buyer"]
+        Seller["Seller"]
+        Admin["Administrator"]
+    end
 
     subgraph Frontend["Agribid Shudh Frontend"]
-        Browser --> App["Next.js Application"]
-        App --> Routes["Routes and Pages"]
-        Routes --> Features["Feature Modules"]
-        Features --> UI["Shared UI Components"]
-        Features --> Client["API Client"]
-        Config["Environment Configuration"] --> Client
+        Browser["Web Browser"] --> App["Next.js Application"]
+        App --> Shell["Routes, Navigation, and Layouts"]
+        Shell --> Features["Feature Modules"]
+        Features --> Shared["Shared UI and Frontend Services"]
+        Shared --> Auth["Session and Permission-aware UI"]
+        Shared --> APIClient["API Client"]
+        Config["Environment Configuration"] --> APIClient
     end
 
-    Client -->|"HTTPS API requests"| API["Backend APIs"]
+    Buyer --> Browser
+    Seller --> Browser
+    Admin --> Browser
+
+    APIClient -->|"HTTPS requests"| API["Backend APIs"]
 
     subgraph Backend["Agribid Shudh Backend"]
-        API --> Logic["Backend Services and Business Logic"]
-        Logic --> Data["Backend Data Storage"]
+        API --> Services["Business Services"]
+        Services --> Data["Persistent Data"]
+        Services <--> Integrations["External Integrations"]
     end
 
-    API -->|"Responses"| Client
-    Client --> Features
+    API -->|"Responses"| APIClient
 ```
 
-The diagram shows the proposed frontend-to-backend interaction at a high level. Backend internals and API contracts should be verified against the backend documentation.
+### Architecture Principles
 
-## Frontend Modules
+- Organize frontend code by product feature, with shared components and services kept reusable.
+- Adapt screens and actions to user roles; the backend must enforce authorization.
+- Treat the backend as the source of truth for business rules and persistent data.
+- Handle loading, empty, and error states consistently.
+- Keep secrets out of source control and configure environment-specific values outside the code.
 
-The following modules are included in the development specifications. Their presence here describes planned product scope, not necessarily completed functionality.
+## Product Modules
+
+The following module names are based on the development-spec filenames provided. Listing a module does not imply it is implemented.
 
 | ID | Module |
 |---|---|
@@ -86,7 +101,7 @@ The following modules are included in the development specifications. Their pres
 
 ## Proposed Sprint Plan
 
-This is an initial grouping based on module names. Confirm dependencies, sprint capacity, and acceptance criteria against the detailed specifications before scheduling.
+This is an initial grouping by module. Confirm dependencies, team capacity, and acceptance criteria against the detailed specifications before scheduling.
 
 | Sprint | Focus | Modules |
 |---|---|---|
@@ -102,7 +117,6 @@ This is an initial grouping based on module names. Confirm dependencies, sprint 
 
 ## Configuration and Security
 
-- Configure API URLs and other environment-specific settings outside the source code.
+- Follow the backend documentation for API URLs, authentication, and required configuration.
 - Do not commit credentials, tokens, or secrets.
-- Follow the backend documentation for authentication, API contracts, and required environment variables.
-- Frontend validation improves usability; the backend must enforce authorization and business rules.
+- Frontend validation supports usability; the backend must enforce business rules and permissions.
