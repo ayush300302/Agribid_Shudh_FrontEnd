@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getPartnerKycDocs, reviewPartnerKycMock } from "@/lib/mock-partners";
+import {
+  getPartnerKycDocs,
+  reviewIndividualKycDocMock,
+  reviewPartnerKycMock,
+} from "@/lib/mock-partners";
 
 export async function GET(
   request: Request,
@@ -21,14 +25,17 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { status, review_note } = body;
+    const { doc_id, status, review_note } = body;
 
-    const result = reviewPartnerKycMock(id, status, review_note);
+    const result = doc_id
+      ? reviewIndividualKycDocMock(id, doc_id, status, review_note)
+      : reviewPartnerKycMock(id, status, review_note);
+
     if (!result) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "NOT_FOUND", message: `Partner with ID '${id}' not found` },
+          error: { code: "NOT_FOUND", message: `Partner or document not found` },
         },
         { status: 404 },
       );

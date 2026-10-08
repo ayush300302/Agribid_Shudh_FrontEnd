@@ -138,7 +138,7 @@ export async function getPartnerKyc(
  */
 export async function reviewPartnerKyc(
   partnerId: string,
-  data: ReviewKYCRequest,
+  data: ReviewKYCRequest & { doc_id?: string },
 ): Promise<{ message: string }> {
   const response = await apiRequest<ApiResponseWrapper<{ message: string }>>(
     `/api/v1/partners/${partnerId}/kyc`,

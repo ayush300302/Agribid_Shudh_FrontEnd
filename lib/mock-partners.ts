@@ -237,3 +237,40 @@ export function reviewPartnerKycMock(
 
   return { partner, documents: docs };
 }
+
+export function reviewIndividualKycDocMock(
+  partnerId: string,
+  docId: string,
+  status: "approved" | "rejected",
+  reviewNote?: string,
+): { partner: Partner; documents: KYCDocument[] } | null {
+  const partner = MOCK_PARTNERS.find((p) => p.id === partnerId);
+  if (!partner) return null;
+
+  const docs = getPartnerKycDocs(partnerId);
+  const targetDoc = docs.find((d) => d.id === docId);
+  if (!targetDoc) return null;
+
+  targetDoc.status = status;
+  targetDoc.reviewed_at = new Date().toISOString();
+  targetDoc.review_note = reviewNote || `Document ${status} by Compliance Officer.`;
+  targetDoc.reviewed_by = "USR-COMPLIANCE-01";
+
+  // Recompute overall partner KYC status:
+  const hasRejected = docs.some((d) => d.status === "rejected");
+  const allApproved = docs.every((d) => d.status === "approved");
+
+  if (hasRejected) {
+    partner.kyc_status = "rejected";
+    partner.status = "blocked";
+  } else if (allApproved) {
+    partner.kyc_status = "approved";
+    partner.status = "active";
+  } else {
+    partner.kyc_status = "submitted";
+  }
+  partner.updated_at = new Date().toISOString();
+
+  return { partner, documents: docs };
+}
+
