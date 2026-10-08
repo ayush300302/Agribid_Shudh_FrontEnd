@@ -9,6 +9,7 @@ import {
   LogIn,
   LogOut,
   Package,
+  Receipt,
   ShieldCheck,
   ShoppingBag,
   Truck,
@@ -30,6 +31,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const catalogActive = pathname.startsWith("/admin/products");
   const ordersActive = pathname.startsWith("/admin/orders");
   const fulfilmentActive = pathname.startsWith("/admin/fulfilment");
+  const invoicesActive = pathname.startsWith("/admin/invoices");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -147,6 +149,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Fulfilment & Dispatch
               </Link>
               <Link
+                href="/admin/invoices"
+                aria-current={invoicesActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(invoicesActive)}`}
+              >
+                <Receipt aria-hidden="true" size={18} />
+                Invoices & GST
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -227,6 +237,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <Truck aria-hidden="true" size={18} />
               Fulfilment
+            </Link>
+            <Link
+              href="/admin/invoices"
+              aria-current={invoicesActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(invoicesActive)}`}
+            >
+              <Receipt aria-hidden="true" size={18} />
+              Invoices
             </Link>
             <Link
               href="/admin/pricing"
