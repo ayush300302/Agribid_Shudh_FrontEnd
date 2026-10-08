@@ -10,6 +10,7 @@ import {
   LogOut,
   Package,
   ShieldCheck,
+  ShoppingBag,
   User as UserIcon,
   Users,
 } from "lucide-react";
@@ -26,6 +27,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const rolesActive = pathname === "/admin/access/roles";
   const partnersActive = pathname.startsWith("/admin/partners");
   const catalogActive = pathname.startsWith("/admin/products");
+  const ordersActive = pathname.startsWith("/admin/orders");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -127,6 +129,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Catalog
               </Link>
               <Link
+                href="/admin/orders"
+                aria-current={ordersActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(ordersActive)}`}
+              >
+                <ShoppingBag aria-hidden="true" size={18} />
+                Orders & POs
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -191,6 +201,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <Package aria-hidden="true" size={18} />
               Catalog
+            </Link>
+            <Link
+              href="/admin/orders"
+              aria-current={ordersActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(ordersActive)}`}
+            >
+              <ShoppingBag aria-hidden="true" size={18} />
+              Orders
             </Link>
             <Link
               href="/admin/pricing"
