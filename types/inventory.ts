@@ -93,3 +93,4 @@ export interface UpdateInventorySettingsRequest {
   location_label?: string;
   selling_price?: number;
 }
+

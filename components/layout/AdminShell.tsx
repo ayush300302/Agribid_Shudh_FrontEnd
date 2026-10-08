@@ -4,10 +4,11 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Boxes,
+  CreditCard,
   IndianRupee,
   LayoutDashboard,
   LogIn,
-  Boxes,
   LogOut,
   Navigation,
   Package,
@@ -17,6 +18,7 @@ import {
   Truck,
   User as UserIcon,
   Users,
+  Wallet,
 } from "lucide-react";
 import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
 import { useLocale } from "@/components/providers/LocaleProvider";
@@ -36,6 +38,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const fulfilmentActive = pathname.startsWith("/admin/fulfilment");
   const deliveryActive = pathname.startsWith("/admin/delivery");
   const invoicesActive = pathname.startsWith("/admin/invoices");
+  const paymentsActive = pathname.startsWith("/admin/payments");
+  const creditActive = pathname.startsWith("/admin/credit");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -177,6 +181,22 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Invoices & GST
               </Link>
               <Link
+                href="/admin/payments"
+                aria-current={paymentsActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(paymentsActive)}`}
+              >
+                <CreditCard aria-hidden="true" size={18} />
+                Payments & Collections
+              </Link>
+              <Link
+                href="/admin/credit"
+                aria-current={creditActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(creditActive)}`}
+              >
+                <Wallet aria-hidden="true" size={18} />
+                Credit & Ledger
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -281,6 +301,22 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <Receipt aria-hidden="true" size={18} />
               Invoices
+            </Link>
+            <Link
+              href="/admin/payments"
+              aria-current={paymentsActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(paymentsActive)}`}
+            >
+              <CreditCard aria-hidden="true" size={18} />
+              Payments
+            </Link>
+            <Link
+              href="/admin/credit"
+              aria-current={creditActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(creditActive)}`}
+            >
+              <Wallet aria-hidden="true" size={18} />
+              Credit
             </Link>
             <Link
               href="/admin/pricing"
