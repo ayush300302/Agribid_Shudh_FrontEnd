@@ -7,6 +7,7 @@ import {
   IndianRupee,
   LayoutDashboard,
   LogIn,
+  Boxes,
   LogOut,
   Navigation,
   Package,
@@ -30,6 +31,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const rolesActive = pathname === "/admin/access/roles";
   const partnersActive = pathname.startsWith("/admin/partners");
   const catalogActive = pathname.startsWith("/admin/products");
+  const inventoryActive = pathname.startsWith("/admin/inventory");
   const ordersActive = pathname.startsWith("/admin/orders");
   const fulfilmentActive = pathname.startsWith("/admin/fulfilment");
   const deliveryActive = pathname.startsWith("/admin/delivery");
@@ -135,6 +137,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Catalog
               </Link>
               <Link
+                href="/admin/inventory"
+                aria-current={inventoryActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(inventoryActive)}`}
+              >
+                <Boxes aria-hidden="true" size={18} />
+                Inventory & Stock
+              </Link>
+              <Link
                 href="/admin/orders"
                 aria-current={ordersActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(ordersActive)}`}
@@ -231,6 +241,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <Package aria-hidden="true" size={18} />
               Catalog
+            </Link>
+            <Link
+              href="/admin/inventory"
+              aria-current={inventoryActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(inventoryActive)}`}
+            >
+              <Boxes aria-hidden="true" size={18} />
+              Inventory
             </Link>
             <Link
               href="/admin/orders"
