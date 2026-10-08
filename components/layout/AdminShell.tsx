@@ -11,6 +11,7 @@ import {
   Package,
   ShieldCheck,
   ShoppingBag,
+  Truck,
   User as UserIcon,
   Users,
 } from "lucide-react";
@@ -28,6 +29,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const partnersActive = pathname.startsWith("/admin/partners");
   const catalogActive = pathname.startsWith("/admin/products");
   const ordersActive = pathname.startsWith("/admin/orders");
+  const fulfilmentActive = pathname.startsWith("/admin/fulfilment");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -137,6 +139,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Orders & POs
               </Link>
               <Link
+                href="/admin/fulfilment"
+                aria-current={fulfilmentActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(fulfilmentActive)}`}
+              >
+                <Truck aria-hidden="true" size={18} />
+                Fulfilment & Dispatch
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -209,6 +219,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <ShoppingBag aria-hidden="true" size={18} />
               Orders
+            </Link>
+            <Link
+              href="/admin/fulfilment"
+              aria-current={fulfilmentActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(fulfilmentActive)}`}
+            >
+              <Truck aria-hidden="true" size={18} />
+              Fulfilment
             </Link>
             <Link
               href="/admin/pricing"
