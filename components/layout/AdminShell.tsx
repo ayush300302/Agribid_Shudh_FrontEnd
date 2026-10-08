@@ -13,6 +13,7 @@ import {
   Navigation,
   Package,
   Receipt,
+  RotateCcw,
   ShieldCheck,
   ShoppingBag,
   Truck,
@@ -40,6 +41,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const invoicesActive = pathname.startsWith("/admin/invoices");
   const paymentsActive = pathname.startsWith("/admin/payments");
   const creditActive = pathname.startsWith("/admin/credit");
+  const claimsActive = pathname.startsWith("/admin/claims");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -197,6 +199,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Credit & Ledger
               </Link>
               <Link
+                href="/admin/claims"
+                aria-current={claimsActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(claimsActive)}`}
+              >
+                <RotateCcw aria-hidden="true" size={18} />
+                Returns & Claims
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -317,6 +327,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <Wallet aria-hidden="true" size={18} />
               Credit
+            </Link>
+            <Link
+              href="/admin/claims"
+              aria-current={claimsActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(claimsActive)}`}
+            >
+              <RotateCcw aria-hidden="true" size={18} />
+              Claims
             </Link>
             <Link
               href="/admin/pricing"

@@ -81,6 +81,7 @@ export interface Order {
   notes?: string;
   placed_at: string;
   expected_delivery_date?: string;
+  delivered_at?: string;
   sla_due_at?: string;
   lines: OrderLine[];
   history?: OrderStatusHistoryItem[];
