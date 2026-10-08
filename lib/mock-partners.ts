@@ -1,4 +1,4 @@
-import type { Partner } from "@/types/partner";
+import type { KYCDocument, KYCStatus, Partner } from "@/types/partner";
 
 export const MOCK_PARTNERS: Partner[] = [
   {
@@ -109,3 +109,131 @@ export const MOCK_PARTNERS: Partner[] = [
   },
 ];
 
+export const MOCK_KYC_DOCS: Record<string, KYCDocument[]> = {
+  "p-004": [
+    {
+      id: "doc-401",
+      partner_id: "p-004",
+      doc_type: "gst_certificate",
+      file_url: "https://example.com/docs/gst_certificate_ganesh.pdf",
+      status: "pending",
+      submitted_at: "2026-03-12T14:45:00Z",
+    },
+    {
+      id: "doc-402",
+      partner_id: "p-004",
+      doc_type: "pan_card",
+      file_url: "https://example.com/docs/pan_card_ganesh.pdf",
+      status: "pending",
+      submitted_at: "2026-03-12T14:46:00Z",
+    },
+    {
+      id: "doc-403",
+      partner_id: "p-004",
+      doc_type: "business_license",
+      file_url: "https://example.com/docs/retail_license_baramati.pdf",
+      status: "pending",
+      submitted_at: "2026-03-12T14:50:00Z",
+    },
+    {
+      id: "doc-404",
+      partner_id: "p-004",
+      doc_type: "bank_details",
+      file_url: "https://example.com/docs/passbook_sbi_baramati.pdf",
+      status: "pending",
+      submitted_at: "2026-03-12T14:52:00Z",
+    },
+  ],
+  "p-002": [
+    {
+      id: "doc-1",
+      partner_id: "p-002",
+      doc_type: "gst_certificate",
+      file_url: "https://example.com/docs/gst_certificate_kisan_seva.pdf",
+      status: "approved",
+      submitted_at: "2026-02-10T12:00:00Z",
+      reviewed_at: "2026-02-11T10:00:00Z",
+      review_note: "Verified via GST portal.",
+    },
+    {
+      id: "doc-2",
+      partner_id: "p-002",
+      doc_type: "pan_card",
+      file_url: "https://example.com/docs/pan_card_proprietor.pdf",
+      status: "approved",
+      submitted_at: "2026-02-10T12:05:00Z",
+      reviewed_at: "2026-02-11T10:00:00Z",
+      review_note: "Matches legal entity name.",
+    },
+  ],
+};
+
+export function getPartnerKycDocs(partnerId: string): KYCDocument[] {
+  if (MOCK_KYC_DOCS[partnerId]) {
+    return MOCK_KYC_DOCS[partnerId];
+  }
+  // Default mock docs for any partner
+  const defaultDocs: KYCDocument[] = [
+    {
+      id: `doc-${partnerId}-1`,
+      partner_id: partnerId,
+      doc_type: "gst_certificate",
+      file_url: "https://example.com/docs/gst_certificate.pdf",
+      status: "pending",
+      submitted_at: new Date().toISOString(),
+    },
+    {
+      id: `doc-${partnerId}-2`,
+      partner_id: partnerId,
+      doc_type: "pan_card",
+      file_url: "https://example.com/docs/pan_card.pdf",
+      status: "pending",
+      submitted_at: new Date().toISOString(),
+    },
+    {
+      id: `doc-${partnerId}-3`,
+      partner_id: partnerId,
+      doc_type: "business_license",
+      file_url: "https://example.com/docs/license.pdf",
+      status: "pending",
+      submitted_at: new Date().toISOString(),
+    },
+    {
+      id: `doc-${partnerId}-4`,
+      partner_id: partnerId,
+      doc_type: "bank_details",
+      file_url: "https://example.com/docs/cancelled_cheque.pdf",
+      status: "pending",
+      submitted_at: new Date().toISOString(),
+    },
+  ];
+  MOCK_KYC_DOCS[partnerId] = defaultDocs;
+  return defaultDocs;
+}
+
+export function reviewPartnerKycMock(
+  partnerId: string,
+  status: "approved" | "rejected",
+  reviewNote?: string,
+): { partner: Partner; documents: KYCDocument[] } | null {
+  const partner = MOCK_PARTNERS.find((p) => p.id === partnerId);
+  if (!partner) return null;
+
+  partner.kyc_status = status;
+  if (status === "approved") {
+    partner.status = "active";
+  } else {
+    partner.status = "blocked";
+  }
+  partner.updated_at = new Date().toISOString();
+
+  const docs = getPartnerKycDocs(partnerId);
+  for (const doc of docs) {
+    doc.status = status;
+    doc.reviewed_at = new Date().toISOString();
+    doc.review_note = reviewNote || `Marked ${status} by Compliance Officer.`;
+    doc.reviewed_by = "USR-COMPLIANCE-01";
+  }
+
+  return { partner, documents: docs };
+}

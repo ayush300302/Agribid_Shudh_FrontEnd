@@ -130,7 +130,19 @@ function PartnerDetailContent({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span
+                className={`rounded-md border px-3 py-1 text-xs font-semibold uppercase ${
+                  partner.kyc_status === "approved"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : partner.kyc_status === "rejected"
+                    ? "bg-red-50 text-red-700 border-red-200"
+                    : "bg-amber-50 text-amber-700 border-amber-200"
+                }`}
+              >
+                KYC: {partner.kyc_status.replace("_", " ")}
+              </span>
+
               <span
                 className={`rounded-md border px-3 py-1 text-xs font-semibold uppercase ${
                   partner.status === "active"
@@ -138,7 +150,7 @@ function PartnerDetailContent({ id }: { id: string }) {
                     : "bg-red-50 text-red-700 border-red-200"
                 }`}
               >
-                {partner.status}
+                Account: {partner.status}
               </span>
             </div>
           </div>
@@ -270,6 +282,8 @@ function PartnerDetailContent({ id }: { id: string }) {
                       className={`rounded-md border px-2.5 py-0.5 text-xs font-medium capitalize ${
                         doc.status === "approved"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : doc.status === "rejected"
+                          ? "bg-red-50 text-red-700 border-red-200"
                           : "bg-amber-50 text-amber-700 border-amber-200"
                       }`}
                     >
