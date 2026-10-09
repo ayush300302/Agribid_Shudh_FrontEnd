@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Bell,
   Boxes,
   CreditCard,
   IndianRupee,
@@ -22,6 +23,7 @@ import {
   Wallet,
 } from "lucide-react";
 import LocaleSwitcher from "@/components/layout/LocaleSwitcher";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { useLocale } from "@/components/providers/LocaleProvider";
 import { useAuth } from "@/components/providers/AuthProvider";
 
@@ -42,6 +44,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const paymentsActive = pathname.startsWith("/admin/payments");
   const creditActive = pathname.startsWith("/admin/credit");
   const claimsActive = pathname.startsWith("/admin/claims");
+  const notificationsActive = pathname.startsWith("/admin/notifications");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -73,6 +76,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           </Link>
 
           <div className="flex items-center gap-4">
+            <NotificationBell />
             <LocaleSwitcher />
 
             {isAuthenticated && user ? (
@@ -207,6 +211,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Returns & Claims
               </Link>
               <Link
+                href="/admin/notifications"
+                aria-current={notificationsActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(notificationsActive)}`}
+              >
+                <Bell aria-hidden="true" size={18} />
+                Notifications
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -335,6 +347,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <RotateCcw aria-hidden="true" size={18} />
               Claims
+            </Link>
+            <Link
+              href="/admin/notifications"
+              aria-current={notificationsActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(notificationsActive)}`}
+            >
+              <Bell aria-hidden="true" size={18} />
+              Notifications
             </Link>
             <Link
               href="/admin/pricing"
