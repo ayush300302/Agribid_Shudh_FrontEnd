@@ -654,3 +654,4 @@ export default function IntegrationsHubPage() {
     </RoleGuard>
   );
 }
+

@@ -593,3 +593,4 @@ export function updateTicketStatusMock(
   ticket.updated_at = new Date().toISOString();
   return ticket;
 }
+

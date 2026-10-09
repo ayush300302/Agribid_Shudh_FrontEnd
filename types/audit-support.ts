@@ -115,3 +115,4 @@ export interface UpdateTicketStatusPayload {
   resolution_notes?: string;
   assignee?: string;
 }
+

@@ -354,11 +354,9 @@ export default function DeliveryConsolePage() {
 
                             <Link
                               href={`/track/${shp.tracking_token}`}
-                              target="_blank"
                               className="inline-flex items-center gap-1 rounded bg-[#f1f5f1] px-2.5 py-1 text-[11px] font-semibold text-[#1b5e20] hover:bg-[#e1eae3] transition-colors"
                             >
                               <Navigation size={12} /> Live Track
-                              <ExternalLink size={10} />
                             </Link>
                           </div>
                         </td>

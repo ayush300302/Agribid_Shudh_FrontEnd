@@ -91,3 +91,4 @@ export interface TriggerTallyExportPayload {
   job_type: TallyJobType;
   export_format: "XML" | "JSON";
 }
+

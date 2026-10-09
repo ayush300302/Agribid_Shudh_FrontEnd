@@ -1,18 +1,19 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
-  ArrowRight,
+  ArrowLeft,
   CheckCircle2,
   Clock,
   KeyRound,
+  LayoutDashboard,
   MapPin,
   Navigation,
   Phone,
-  QrCode,
   ShieldCheck,
   Truck,
   User,
@@ -27,6 +28,7 @@ export default function PublicLiveTrackingPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = use(params);
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   // Handover state
@@ -37,7 +39,10 @@ export default function PublicLiveTrackingPage({
   const [podSuccess, setPodSuccess] = useState(false);
   const [handoverError, setHandoverError] = useState<string | null>(null);
 
-  const { data: trackingInfo, isLoading, error } = useQuery({
+  // Auto redirect countdown state (in seconds)
+  const [countdown, setCountdown] = useState<number | null>(null);
+
+  const { data: trackingInfo, isLoading } = useQuery({
     queryKey: ["live-tracking", token],
     queryFn: () => getTrackingInfo(token),
   });
@@ -59,11 +64,31 @@ export default function PublicLiveTrackingPage({
       setPodSuccess(true);
       setHandoverError(null);
       queryClient.invalidateQueries({ queryKey: ["live-tracking", token] });
+      queryClient.invalidateQueries({ queryKey: ["delivery-shipments"] });
+      queryClient.invalidateQueries({ queryKey: ["orders-ready-for-dispatch"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      // Start 3-second auto-redirect countdown to original dashboard
+      setCountdown(3);
     },
     onError: (err: any) => {
       setHandoverError(err.message || "Invalid OTP or delivery failure");
     },
   });
+
+  // Countdown effect to redirect to original dashboard
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown <= 0) {
+      router.push("/");
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown((prev) => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [countdown, router]);
 
   if (isLoading) {
     return (
@@ -79,12 +104,20 @@ export default function PublicLiveTrackingPage({
   if (!trackingInfo) {
     return (
       <div className="min-h-screen bg-[#f1f5f1] flex items-center justify-center p-4">
-        <div className="w-full max-w-md rounded-xl border border-red-200 bg-white p-8 text-center shadow-xs">
+        <div className="w-full max-w-md rounded-xl border border-red-200 bg-white p-8 text-center shadow-xs space-y-4">
           <AlertCircle size={32} className="mx-auto text-red-600" />
-          <h2 className="mt-2 text-base font-bold text-[#19392a]">Tracking Link Expired or Invalid</h2>
-          <p className="mt-1 text-xs text-[#64766a]">
-            Tracking tokens expire 7 days after delivery as per Rule DL-05.
-          </p>
+          <div>
+            <h2 className="text-base font-bold text-[#19392a]">Tracking Link Expired or Invalid</h2>
+            <p className="mt-1 text-xs text-[#64766a]">
+              Tracking tokens expire 7 days after delivery as per Rule DL-05.
+            </p>
+          </div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#1b5e20] px-4 py-2 text-xs font-semibold text-white hover:bg-[#154a19] transition-colors"
+          >
+            <ArrowLeft size={14} /> Return to Original Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -95,28 +128,49 @@ export default function PublicLiveTrackingPage({
 
   return (
     <div className="min-h-screen bg-[#f1f5f1] text-[#19392a]">
-      {/* Top Tracking Header */}
+      {/* Top Tracking Header with direct navigation back to original dashboard */}
       <header className="border-b border-[#dce5dd] bg-white sticky top-0 z-10 shadow-xs">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-md bg-[#1b5e20] text-xs font-bold text-white">
-              AS
-            </span>
-            <div>
-              <span className="block text-xs font-bold text-[#19392a]">Agribid Shudh Live Tracking</span>
-              <span className="block text-[10px] text-[#64766a] font-mono">{shipment.shipment_number}</span>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              title="Return to Original Dashboard"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[#dce5dd] bg-[#f8faf8] px-2.5 py-1 text-xs font-semibold text-[#19392a] hover:bg-[#e9f1e9] hover:text-[#1b5e20] transition-colors"
+            >
+              <ArrowLeft size={13} />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Link>
+
+            <div className="flex items-center gap-2 border-l border-[#eef2ef] pl-3">
+              <span className="flex size-7 items-center justify-center rounded-md bg-[#1b5e20] text-xs font-bold text-white">
+                AS
+              </span>
+              <div>
+                <span className="block text-xs font-bold text-[#19392a]">Live Tracking</span>
+                <span className="block text-[10px] text-[#64766a] font-mono">{shipment.shipment_number}</span>
+              </div>
             </div>
           </div>
 
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-              isDelivered
-                ? "bg-emerald-100 text-emerald-800"
-                : "bg-amber-100 text-amber-800 animate-pulse"
-            }`}
-          >
-            {isDelivered ? "DELIVERED" : shipment.status.replace("_", " ")}
-          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/delivery"
+              className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium text-[#64766a] hover:text-[#1b5e20] transition-colors mr-2"
+            >
+              <Truck size={13} />
+              Fleet Ops
+            </Link>
+
+            <span
+              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                isDelivered
+                  ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                  : "bg-amber-100 text-amber-800 border border-amber-300 animate-pulse"
+              }`}
+            >
+              {isDelivered ? "DELIVERED" : shipment.status.replace("_", " ")}
+            </span>
+          </div>
         </div>
       </header>
 
@@ -286,14 +340,58 @@ export default function PublicLiveTrackingPage({
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-6 text-center space-y-2 shadow-xs">
-            <CheckCircle2 size={36} className="mx-auto text-emerald-700" />
-            <h3 className="text-base font-bold text-emerald-950">
-              Delivery Completed & Stock Transferred
-            </h3>
-            <p className="text-xs text-emerald-800">
-              Proof of Delivery has been recorded. The buyer's godown inventory has been credited automatically.
-            </p>
+          /* Completed Delivery State with Automatic Return to Dashboard */
+          <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-6 text-center space-y-4 shadow-xs">
+            <CheckCircle2 size={40} className="mx-auto text-emerald-700" />
+            <div>
+              <h3 className="text-base font-bold text-emerald-950">
+                Delivery Completed & Stock Transferred
+              </h3>
+              <p className="mt-1 text-xs text-emerald-800">
+                Proof of Delivery has been recorded. The buyer's godown inventory has been credited automatically.
+              </p>
+            </div>
+
+            {/* Countdown Banner if active */}
+            {countdown !== null && (
+              <div className="mx-auto max-w-sm rounded-lg bg-emerald-100/80 p-3 text-xs text-emerald-950 border border-emerald-300">
+                <p className="font-semibold">
+                  Redirecting to original dashboard in{" "}
+                  <span className="font-mono text-sm font-bold text-[#1b5e20]">{countdown}s</span>...
+                </p>
+                <div className="mt-2 h-1.5 w-full bg-emerald-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#1b5e20] transition-all duration-1000 ease-linear rounded-full"
+                    style={{ width: `${((4 - countdown) / 3) * 100}%` }}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCountdown(null)}
+                  className="mt-2 text-[11px] font-medium text-emerald-800 underline hover:text-emerald-950"
+                >
+                  Stay on this page
+                </button>
+              </div>
+            )}
+
+            {/* Primary Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <Link
+                href="/"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#1b5e20] px-5 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-[#154a19] transition-colors"
+              >
+                <LayoutDashboard size={15} />
+                Return to Original Dashboard
+              </Link>
+              <Link
+                href="/admin/delivery"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-[#dce5dd] bg-white px-4 py-2.5 text-xs font-semibold text-[#19392a] shadow-xs hover:bg-[#f1f5f1] transition-colors"
+              >
+                <Truck size={15} />
+                Fleet Operations
+              </Link>
+            </div>
           </div>
         )}
       </main>

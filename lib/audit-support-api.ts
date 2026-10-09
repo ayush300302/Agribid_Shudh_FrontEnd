@@ -141,3 +141,4 @@ export async function updateSupportTicketStatus(
     return updateTicketStatusMock(id, payload.status, payload.resolution_notes, payload.assignee);
   }
 }
+
