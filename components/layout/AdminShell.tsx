@@ -8,6 +8,7 @@ import {
   Bell,
   Boxes,
   CreditCard,
+  FileCheck2,
   IndianRupee,
   LayoutDashboard,
   LogIn,
@@ -47,6 +48,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const claimsActive = pathname.startsWith("/admin/claims");
   const notificationsActive = pathname.startsWith("/admin/notifications");
   const reportsActive = pathname.startsWith("/admin/reports");
+  const governanceActive =
+    pathname.startsWith("/admin/governance") || pathname.startsWith("/admin/operations");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -229,6 +232,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Reports & BI
               </Link>
               <Link
+                href="/admin/governance"
+                aria-current={governanceActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(governanceActive)}`}
+              >
+                <FileCheck2 aria-hidden="true" size={18} />
+                Governance & Ops
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -373,6 +384,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <BarChart3 aria-hidden="true" size={18} />
               Reports
+            </Link>
+            <Link
+              href="/admin/governance"
+              aria-current={governanceActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(governanceActive)}`}
+            >
+              <FileCheck2 aria-hidden="true" size={18} />
+              Governance
             </Link>
             <Link
               href="/admin/pricing"
