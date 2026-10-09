@@ -71,3 +71,4 @@ export interface ActiveAdminSession {
   last_activity_at: string;
   idle_timeout_mins: number;
 }
+

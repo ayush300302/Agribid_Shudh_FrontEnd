@@ -19,6 +19,10 @@ import {
   RotateCcw,
   ShieldCheck,
   ShoppingBag,
+  Sliders,
+  LifeBuoy,
+  Cpu,
+  FileText,
   Truck,
   User as UserIcon,
   Users,
@@ -52,6 +56,10 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     pathname.startsWith("/admin/governance") || pathname.startsWith("/admin/operations");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
+  const supportActive = pathname.startsWith("/admin/support");
+  const auditActive = pathname.startsWith("/admin/audit");
+  const configActive = pathname.startsWith("/admin/config");
+  const integrationsActive = pathname.startsWith("/admin/integrations");
 
   const navigationClass = (active: boolean) =>
     `flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors ${
@@ -248,6 +256,38 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Pricing & Schemes
               </Link>
               <Link
+                href="/admin/support"
+                aria-current={supportActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(supportActive)}`}
+              >
+                <LifeBuoy aria-hidden="true" size={18} />
+                Support Desk
+              </Link>
+              <Link
+                href="/admin/audit"
+                aria-current={auditActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(auditActive)}`}
+              >
+                <FileText aria-hidden="true" size={18} />
+                Audit Trail
+              </Link>
+              <Link
+                href="/admin/config"
+                aria-current={configActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(configActive)}`}
+              >
+                <Sliders aria-hidden="true" size={18} />
+                System Config
+              </Link>
+              <Link
+                href="/admin/integrations"
+                aria-current={integrationsActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(integrationsActive)}`}
+              >
+                <Cpu aria-hidden="true" size={18} />
+                Integrations Hub
+              </Link>
+              <Link
                 href="/admin/access/roles"
                 aria-current={rolesActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(rolesActive)}`}
@@ -400,6 +440,38 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <IndianRupee aria-hidden="true" size={18} />
               Pricing
+            </Link>
+            <Link
+              href="/admin/support"
+              aria-current={supportActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(supportActive)}`}
+            >
+              <LifeBuoy aria-hidden="true" size={18} />
+              Support
+            </Link>
+            <Link
+              href="/admin/audit"
+              aria-current={auditActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(auditActive)}`}
+            >
+              <FileText aria-hidden="true" size={18} />
+              Audit
+            </Link>
+            <Link
+              href="/admin/config"
+              aria-current={configActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(configActive)}`}
+            >
+              <Sliders aria-hidden="true" size={18} />
+              Config
+            </Link>
+            <Link
+              href="/admin/integrations"
+              aria-current={integrationsActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(integrationsActive)}`}
+            >
+              <Cpu aria-hidden="true" size={18} />
+              Integrations
             </Link>
             <Link
               href="/admin/access/roles"

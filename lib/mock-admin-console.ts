@@ -292,3 +292,4 @@ export function evictSessionMock(sessionId: string): { success: boolean } {
   activeSessions = activeSessions.filter((s) => s.id !== sessionId);
   return { success: true };
 }
+
