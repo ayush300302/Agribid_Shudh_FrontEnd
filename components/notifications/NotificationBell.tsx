@@ -57,7 +57,7 @@ export default function NotificationBell() {
   const { data: unreadCount = 0 } = useQuery({
     queryKey: ["notifications-unread-count"],
     queryFn: () => getUnreadNotificationCount(),
-    refetchInterval: 10000,
+    refetchInterval: 60000,
   });
 
   // Fetch recent in-app notifications
@@ -204,3 +204,4 @@ export default function NotificationBell() {
     </div>
   );
 }
+

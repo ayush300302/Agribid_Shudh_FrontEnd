@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   Bell,
   Boxes,
   CreditCard,
@@ -45,6 +46,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const creditActive = pathname.startsWith("/admin/credit");
   const claimsActive = pathname.startsWith("/admin/claims");
   const notificationsActive = pathname.startsWith("/admin/notifications");
+  const reportsActive = pathname.startsWith("/admin/reports");
   const pricingActive =
     pathname.startsWith("/admin/pricing") || pathname.startsWith("/admin/schemes");
 
@@ -219,6 +221,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 Notifications
               </Link>
               <Link
+                href="/admin/reports"
+                aria-current={reportsActive ? "page" : undefined}
+                className={`mt-1 ${navigationClass(reportsActive)}`}
+              >
+                <BarChart3 aria-hidden="true" size={18} />
+                Reports & BI
+              </Link>
+              <Link
                 href="/admin/pricing"
                 aria-current={pricingActive ? "page" : undefined}
                 className={`mt-1 ${navigationClass(pricingActive)}`}
@@ -355,6 +365,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             >
               <Bell aria-hidden="true" size={18} />
               Notifications
+            </Link>
+            <Link
+              href="/admin/reports"
+              aria-current={reportsActive ? "page" : undefined}
+              className={`ml-1 inline-flex ${navigationClass(reportsActive)}`}
+            >
+              <BarChart3 aria-hidden="true" size={18} />
+              Reports
             </Link>
             <Link
               href="/admin/pricing"
